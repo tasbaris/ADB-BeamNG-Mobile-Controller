@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BeamNG GT3 Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&display=swap');
+
+        :root {
+            --bg: #0a0a0a;
+            --panel: #111;
+            --border: #2a2a2a;
+            --accent: #ff4a00;
+            --text-main: #ffffff;
+            --text-dim: #777777;
+            --safe: #00e676;
+            --warn: #ffea00;
+            --danger: #ff1744;
+            --led-off: #1a1a1a;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        /* --- LED STRIP --- */
+        .led-container {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            height: 25px;
+            margin-bottom: 10px;
+        }
+
+        .led {
+            flex: 1;
+            max-width: 40px;
+            border-radius: 4px;
+            background: var(--led-off);
+            border: 1px solid #000;
+            transition: background 0.05s, box-shadow 0.05s;
+        }
+
+        .led.active.g {
+            background: var(--safe);
+            box-shadow: 0 0 10px var(--safe);
+        }
+
+        .led.active.y {
+            background: var(--warn);
+            box-shadow: 0 0 10px var(--warn);
+        }
+
+        .led.active.r {
+            background: var(--danger);
+            box-shadow: 0 0 12px var(--danger);
+        }
+
+        .led.active.b {
+            background: #00e5ff;
+            box-shadow: 0 0 15px #00e5ff;
+        }
+
+        /* --- MAIN DASH LAYOUT --- */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            grid-template-rows: 1fr 60px;
+            gap: 10px;
+            flex: 1;
+        }
+
+        /* --- BLOCKS --- */
+        .block {
+            background: var(--panel);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CENTER (GEAR & SPEED) */
+        .center-block {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .gear-val {
+            font-family: 'Teko', sans-serif;
+            font-size: 180px;
+            line-height: 0.8;
+            font-weight: 700;
+            color: var(--text-main);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .speed-val {
+            font-family: 'Teko', sans-serif;
+            font-size: 70px;
+            line-height: 0.8;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        .speed-lbl {
+            font-size: 16px;
+            color: var(--text-dim);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* LEFT/RIGHT SIDE PANELS */
+        .side-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #222;
+            padding-bottom: 5px;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .d-lbl {
+            font-size: 16px;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+
+        .d-val {
+            font-family: 'Teko', sans-serif;
+            font-size: 38px;
+            line-height: 0.8;
+            font-weight: 600;
+        }
+
+        .d-unit {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-left: 5px;
+        }
+
+        /* BAR METERS */
+        .bar-wrap {
+            width: 100%;
+            height: 8px;
+            background: #222;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--safe);
+            width: 0%;
+            transition: width 0.1s linear, background 0.2s;
+        }
+
+        /* --- BOTTOM ROW (PEDALS & WARNINGS) --- */
+        .bottom-block {
+            grid-column: 1 / 4;
+            grid-row: 2 / 3;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        /* PEDALS */
+        .pedals-area {
+            display: flex;
+            gap: 15px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .pedal-meter {
+            width: 80px;
+            height: 16px;
+            background: #222;
+            border-radius: 2px;
+            border: 1px solid #444;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .p-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+        }
+
+        .p-c {
+            background: #00e5ff;
+        }
+
+        .p-b {
+            background: var(--danger);
+        }
+
+        .p-t {
+            background: var(--safe);
+        }
+
+        .p-lbl {
+            font-size: 12px;
+            color: var(--text-dim);
+            position: absolute;
+            left: 5px;
+            top: 0px;
+            line-height: 16px;
+            z-index: 2;
+            mix-blend-mode: difference;
+            color: #fff;
+        }
+
+        /* WARNINGS */
+        .warnings {
+            display: flex;
+            gap: 15px;
+        }
+
+        .warn-lbl {
+            font-size: 18px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 4px;
+            background: #111;
+            border: 1px solid #333;
+            color: #444;
+            transition: all 0.1s;
+        }
+
+        .warn-lbl.active.abs {
+            background: var(--warn);
+            color: #000;
+            border-color: var(--warn);
+            box-shadow: 0 0 10px var(--warn);
+        }
+
+        .warn-lbl.active.esc {
+            background: #00e5ff;
+            color: #000;
+            border-color: #00e5ff;
+            box-shadow: 0 0 10px #00e5ff;
+        }
+
+        .warn-lbl.active.chk {
+            background: var(--danger);
+            color: #000;
+            border-color: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .warn-lbl.active.brk {
+            background: var(--danger);
+            color: #000;
+            border-color: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        #fs-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: 1px solid #333;
+            color: #555;
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 100;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="fs-btn">⛶ FULL</button>
+
+    <!-- SHIFT LIGHTS -->
+    <div class="led-container" id="led-strip">
+        <!-- 15 LEDs generated by JS -->
+    </div>
+
+    <div class="dash-grid">
+        <!-- LEFT PANEL -->
+        <div class="block side-block">
+            <div>
+                <div class="data-row">
+                    <span class="d-lbl">ENGINE RPM</span>
+                    <div><span class="d-val" id="val-rpm" style="color: var(--accent);">0</span></div>
+                </div>
+                <div class="data-row" style="margin-top:15px; flex-direction: column;">
+                    <div style="width: 100%; display: flex; justify-content: space-between;">
+                        <span class="d-lbl">WATER TEMP</span>
+                        <div><span class="d-val" id="val-wat">0</span><span class="d-unit">°C</span></div>
+                    </div>
+                    <div class="bar-wrap">
+                        <div class="bar-fill" id="bar-wat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-row" style="flex-direction: column;">
+                <div style="width: 100%; display: flex; justify-content: space-between;">
+                    <span class="d-lbl">FUEL LEVEL</span>
+                    <div><span class="d-val" id="val-fuel">0</span><span class="d-unit">%</span></div>
+                </div>
+                <div class="bar-wrap">
+                    <div class="bar-fill" id="bar-fuel" style="background: #00e5ff;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL -->
+        <div class="block center-block">
+            <div class="gear-val" id="val-gear">N</div>
+            <div style="display: flex; align-items: baseline; gap: 5px;">
+                <div class="speed-val" id="val-spd">0</div>
+                <div class="speed-lbl">KM/H</div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="block side-block">
+            <div>
+                <div class="data-row" style="flex-direction: column;">
+                    <div style="width: 100%; display: flex; justify-content: space-between;">
+                        <span class="d-lbl">OIL TEMP</span>
+                        <div><span class="d-val" id="val-oilt">0</span><span class="d-unit">°C</span></div>
+                    </div>
+                    <div class="bar-wrap">
+                        <div class="bar-fill" id="bar-oilt"></div>
+                    </div>
+                </div>
+                <div class="data-row" style="margin-top:15px;">
+                    <span class="d-lbl">OIL PRESS</span>
+                    <div><span class="d-val" id="val-oilp">0.0</span><span class="d-unit">BAR</span></div>
+                </div>
+            </div>
+
+            <div class="data-row" style="flex-direction: column;">
+                <div style="width: 100%; display: flex; justify-content: space-between;">
+                    <span class="d-lbl" style="color:var(--accent);">TURBO BOOST</span>
+                    <div><span class="d-val" id="val-trb" style="color:var(--accent);">0.00</span><span
+                            class="d-unit">BAR</span></div>
+                </div>
+                <div class="bar-wrap">
+                    <div class="bar-fill" id="bar-trb" style="background: var(--accent);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM PANEL (PEDALS & WARNINGS) -->
+        <div class="block bottom-block">
+            <div class="pedals-area">
+                <div class="pedal-meter">
+                    <div class="p-fill p-c" id="p-clu"></div>
+                    <div class="p-lbl">CLUTCH</div>
+                </div>
+                <div class="pedal-meter">
+                    <div class="p-fill p-b" id="p-brk"></div>
+                    <div class="p-lbl">BRAKE</div>
+                </div>
+                <div class="pedal-meter">
+                    <div class="p-fill p-t" id="p-thr"></div>
+                    <div class="p-lbl">THROTTLE</div>
+                </div>
+            </div>
+
+            <div class="warnings">
+                <div class="warn-lbl abs" id="w-abs">ABS</div>
+                <div class="warn-lbl esc" id="w-esc">TCS</div>
+                <div class="warn-lbl chk" id="w-chk">ENG</div>
+                <div class="warn-lbl brk" id="w-brk">BRK</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate LEDs
+        const ledStrip = document.getElementById('led-strip');
+        const leds = [];
+        for (let i = 0; i < 15; i++) {
+            let led = document.createElement('div');
+            led.className = 'led';
+            ledStrip.appendChild(led);
+            leds.push(led);
+        }
+
+        // Fullscreen
+        document.getElementById('fs-btn').onclick = () => {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        };
+
+        // Elements
+        const el = {
+            rpm: document.getElementById('val-rpm'),
+            gear: document.getElementById('val-gear'),
+            spd: document.getElementById('val-spd'),
+            watT: document.getElementById('val-wat'), barWat: document.getElementById('bar-wat'),
+            fuel: document.getElementById('val-fuel'), barFuel: document.getElementById('bar-fuel'),
+            oilT: document.getElementById('val-oilt'), barOilT: document.getElementById('bar-oilt'),
+            oilP: document.getElementById('val-oilp'),
+            trb: document.getElementById('val-trb'), barTrb: document.getElementById('bar-trb'),
+
+            pClu: document.getElementById('p-clu'),
+            pBrk: document.getElementById('p-brk'),
+            pThr: document.getElementById('p-thr'),
+
+            wAbs: document.getElementById('w-abs'),
+            wEsc: document.getElementById('w-esc'),
+            wChk: document.getElementById('w-chk'),
+            wBrk: document.getElementById('w-brk')
+        };
+
+        const updateBarColor = (el, val, max, isTemp) => {
+            let pct = Math.max(0, Math.min(100, (val / max) * 100));
+            el.style.width = pct + '%';
+            if (isTemp) {
+                if (val > 110) el.style.background = 'var(--danger)';
+                else if (val > 95) el.style.background = 'var(--warn)';
+                else el.style.background = 'var(--safe)';
+            }
+        };
+
+        // WEBSOCKET
+        const ws = new WebSocket(`ws://${window.location.hostname}:8765`);
+
+        ws.onmessage = (e) => {
+            const p = e.data.split('|');
+            // T|SPEED|RPM|GEAR|ENGTEMP|OILTEMP|OILPRESS|FUEL|TURBO|THROTTLE|BRAKE|CLUTCH|LIGHTS
+            if (p[0] === 'T' && p.length >= 13) {
+                let speed = p[1], rpm = parseInt(p[2]), g = parseInt(p[3]);
+                let engT = parseFloat(p[4]), oilT = parseFloat(p[5]), oilP = parseFloat(p[6]);
+                let fuel = parseFloat(p[7]), turbo = parseFloat(p[8]);
+                let thr = parseFloat(p[9]), brk = parseFloat(p[10]), clu = parseFloat(p[11]);
+                let flags = parseInt(p[12]);
+
+                // Center
+                el.spd.innerText = speed;
+                el.rpm.innerText = rpm;
+                if (g === 0) el.gear.innerText = 'R';
+                else if (g === 1) el.gear.innerText = 'N';
+                else el.gear.innerText = (g - 1).toString();
+
+                // Sides
+                el.watT.innerText = engT.toFixed(0); updateBarColor(el.barWat, engT, 130, true);
+                el.oilT.innerText = oilT.toFixed(0); updateBarColor(el.barOilT, oilT, 150, true);
+                el.oilP.innerText = oilP.toFixed(1);
+
+                el.fuel.innerText = fuel.toFixed(0); el.barFuel.style.width = Math.min(100, Math.max(0, fuel)) + '%';
+
+                el.trb.innerText = turbo.toFixed(2); el.barTrb.style.width = Math.min(100, Math.max(0, (turbo / 2.5) * 100)) + '%';
+
+                // Pedals
+                el.pThr.style.width = Math.min(100, Math.max(0, thr)) + '%';
+                el.pBrk.style.width = Math.min(100, Math.max(0, brk)) + '%';
+                el.pClu.style.width = Math.min(100, Math.max(0, clu)) + '%';
+
+                // Warnings
+                el.wAbs.classList.toggle('active', (flags & 1024) !== 0);
+                el.wEsc.classList.toggle('active', (flags & 16) !== 0);
+                el.wChk.classList.toggle('active', (flags & 256) !== 0);
+                el.wBrk.classList.toggle('active', (flags & 4) !== 0);
+
+                // LED Logic
+                let activeLeds = Math.min(15, Math.floor((rpm / 7500) * 15));
+                leds.forEach((led, i) => {
+                    led.className = 'led';
+                    if (i < activeLeds) {
+                        if (i < 5) led.classList.add('active', 'g');
+                        else if (i < 10) led.classList.add('active', 'y');
+                        else if (i < 14) led.classList.add('active', 'r');
+                        else led.classList.add('active', 'b'); // Shift Flash (Blue)
+                    }
+                });
+            }
+        };
+    </script>
+</body>
+
+</html>
