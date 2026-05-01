@@ -15,7 +15,6 @@ Bu proje, akıllı telefonunuzun jiroskop ve dokunmatik ekranını kullanarak Be
 
 - **Çift Yönlü Telemetri:** Telefonunuzda RPM, Hız (KM/H), Vites ve Turbo Basıncı gibi verileri anlık gösteren dijital panel.
 - **Ultra Düşük Gecikme:** 10ms döngü süresi ile anında tepki.
-- **Çift Mod:** Sokak (Debriyajlı) ve Ralli (El Frenli) arayüzleri.
 - **Çoklu Dokunmatik:** Gaz, fren ve viteslere aynı anda basabilme.
 - **Bağımsız GT3 Yarış Ekranı:** İkinci monitörler veya tabletler için ultra detaylı `race_dash.html` MoTeC stili panel.
 - **💻 Uyumluluk:** Bu proje macOS üzerinde **CrossOver** kullanılarak test edilmiş ve başarıyla çalıştırılmıştır.
@@ -69,7 +68,6 @@ This project allows you to control BeamNG.drive using your smartphone's gyroscop
 
 - **Bi-Directional Telemetry:** A live digital dash on your phone showing RPM, Speed (KM/H), Gear, and Turbo Boost.
 - **Ultra-Low Latency:** 10ms processing loop for instant feedback.
-- **Dual Modes:** Street (with Clutch) and Rally (with Handbrake) layouts.
 - **Multi-Touch:** Support for simultaneous pedal and gear inputs.
 - **Standalone GT3 Dashboard:** Included `race_dash.html` for a detailed MoTeC-style professional screen for tablets or 2nd monitors.
 - **💻 Compatibility:** This project has been tested and verified on **macOS** using **CrossOver**.
