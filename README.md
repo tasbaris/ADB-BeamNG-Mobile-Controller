@@ -5,6 +5,13 @@
 
 A professional, ultra-low latency mobile steering wheel and pedal controller for BeamNG.drive. Turn your smartphone into a high-precision virtual racing wheel with a live telemetry dashboard, support for street driving (clutch) and rally racing (handbrake).
 
+### Screenshot
+Normal Dash
+![BeamNG Mobile Controller](dash.jpeg)
+
+Race Dash(just for telemetry)
+![BeamNG Mobile Controller](race_dash.png)
+
 ---
 
 ## 🇹🇷 Türkçe Kurulum Rehberi
