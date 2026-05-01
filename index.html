@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BeamNG Mobile Controller Pro</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --panel: #121216;
+            --accent: #00f2ff;
+            --clutch: #95a5a6;
+            --brake: #e74c3c;
+            --gas: #2ecc71;
+            --hb: #f39c12;
+            --text: #ffffff;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            gap: 5px;
+        }
+
+        /* TAB BAR */
+        .tab-bar { display: flex; height: 35px; gap: 5px; z-index: 110; }
+        .tab-btn {
+            flex: 1; background: #111; border: 1px solid #333; border-radius: 8px;
+            color: #888; font-weight: bold; font-size: 13px; pointer-events: auto;
+        }
+        .tab-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
+
+        /* TOP PANEL (GEARS & SYSTEM) */
+        .top-row { display: flex; justify-content: space-between; height: 55px; gap: 8px; position: relative; z-index: 120; }
+        
+        .gear-btn {
+            width: 28%; background: #1a1a20; border: 2px solid #444; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px; color: white; pointer-events: auto;
+        }
+        .gear-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
+
+        .top-center { flex: 1; display: flex; gap: 8px; }
+        .sys-btn {
+            flex: 1; background: #222; border: 1px solid #444; border-radius: 10px;
+            color: white; font-weight: bold; display: flex; align-items: center;
+            justify-content: center; font-size: 11px; pointer-events: auto;
+        }
+        .sys-btn.active { background: #555; }
+
+        /* MAIN LAYOUT */
+        .main-row { flex: 1; display: none; gap: 8px; z-index: 50; }
+        .main-row.active { display: flex; }
+
+        .pedal-slot { width: 20%; height: 100%; }
+        .pedal-slot.wide { width: 25%; }
+        .wheel-slot { flex: 1; height: 100%; }
+
+        .pedal-box, .shared-comp {
+            width: 100%; height: 100%;
+            background: var(--panel); border: 1px solid #333; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 10px 5px; overflow: hidden; position: relative;
+        }
+
+        .pedal-label { font-weight: bold; text-transform: uppercase; font-size: 11px; margin-bottom: 5px; color: #888; }
+        .val-text { font-family: monospace; font-size: 14px; color: var(--accent); z-index: 5; margin-top: 5px; }
+
+        .pedal-track {
+            flex: 1; width: 65px; background: rgba(0,0,0,0.5);
+            border-radius: 35px; position: relative; margin: 5px 0; border: 1px solid #222;
+        }
+        .handbrake-box .pedal-track { width: 85px; border-radius: 15px; }
+
+        .pedal-thumb {
+            width: 100%; height: 60px; border-radius: 35px; position: absolute;
+            bottom: 0; left: 0; border: 2px solid #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); pointer-events: none;
+        }
+        .handbrake-box .pedal-thumb { height: 80px; border-radius: 10px; border-color: var(--hb); border-width: 4px; }
+
+        .pedal-fill {
+            width: 100%; border-radius: 35px; position: absolute;
+            bottom: 0; left: 0; opacity: 0.3; pointer-events: none;
+        }
+
+        .wheel-container {
+            width: 100%; height: 100%; background: var(--panel); border: 1px solid #333;
+            border-radius: 15px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative;
+        }
+
+        .steering-wheel {
+            width: 140px; height: 140px; border: 8px solid #333; border-radius: 50%;
+            position: relative; transition: transform 0.05s linear;
+        }
+        .steering-wheel::after {
+            content: ''; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            width: 16px; height: 16px; background: var(--accent); border-radius: 3px;
+        }
+
+        .fs-btn { position: absolute; top: 10px; right: 10px; padding: 5px; border-radius: 5px; font-size: 10px; background: #222; border: 1px solid #444; color: #888; z-index: 10; }
+        .cal-btn { position: absolute; bottom: 10px; padding: 5px 15px; border-radius: 5px; font-size: 11px; background: #222; border: 1px solid #444; color: #888; z-index: 10; }
+        .info-text { font-family: monospace; font-size: 9px; color: #555; position: absolute; top: 5px; left: 10px; }
+        #gyroBtn { margin-top: 15px; background: var(--accent); border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; position: relative; z-index: 20; }
+
+    </style>
+</head>
+<body>
+
+    <div class="tab-bar">
+        <button id="tabStreet" class="tab-btn active">STREET MODE</button>
+        <button id="tabRally" class="tab-btn">RALLY MODE</button>
+    </div>
+
+    <div class="top-row">
+        <div class="gear-btn" id="gearUp">SHIFT UP (+)</div>
+        <div class="top-center">
+            <div class="sys-btn" id="btnT">START (T)</div>
+            <div class="sys-btn" id="btnR">RESET (R)</div>
+        </div>
+        <div class="gear-btn" id="gearDown">SHIFT DOWN (-)</div>
+    </div>
+
+    <div class="main-row active" id="streetMode">
+        <div class="pedal-slot" id="clutch-slot">
+            <div class="pedal-box" id="clutch-box">
+                <span class="pedal-label" style="color:var(--clutch)">Clutch</span>
+                <div class="pedal-track">
+                    <div class="pedal-fill" id="clutch-fill" style="background:var(--clutch)"></div>
+                    <div class="pedal-thumb" id="clutch-thumb" style="background:var(--clutch)"></div>
+                </div>
+                <span class="val-text" id="clutch-val">0%</span>
+            </div>
+        </div>
+        <div class="wheel-slot" id="wheel-slot-1"></div>
+        <div class="pedal-slot" id="brake-slot-1"></div>
+        <div class="pedal-slot" id="gas-slot-1"></div>
+    </div>
+
+    <div class="main-row" id="rallyMode">
+        <div class="pedal-slot wide" id="hb-slot">
+            <div class="pedal-box handbrake-box" id="hb-box">
+                <span class="pedal-label" style="color:var(--hb)">HANDBRAKE</span>
+                <div class="pedal-track">
+                    <div class="pedal-fill" id="hb-fill" style="background:var(--hb)"></div>
+                    <div class="pedal-thumb" id="hb-thumb" style="background:transparent"></div>
+                </div>
+                <span class="val-text" id="hb-val">0%</span>
+            </div>
+        </div>
+        <div class="wheel-slot" id="wheel-slot-2"></div>
+        <div class="pedal-slot" id="brake-slot-2"></div>
+        <div class="pedal-slot" id="gas-slot-2"></div>
+    </div>
+
+    <div id="shared-elements" style="display:none;">
+        <div id="shared-wheel" class="wheel-container">
+            <span class="info-text" id="ws-status">WAITING...</span>
+            <button class="fs-btn" id="fsBtn">FULLSCREEN</button>
+            <div class="steering-wheel" id="wheel-img"></div>
+            <div class="val-text" id="steer-val" style="margin-top:15px;">0.00</div>
+            <span class="info-text" id="debug-text" style="top:auto; bottom:40px; text-align:center; left:0; right:0;">TILT: 0.0°</span>
+            <button class="cal-btn" id="calibrateBtn">CALIBRATE</button>
+            <button id="gyroBtn">ENABLE SENSOR</button>
+        </div>
+        <div id="shared-brake" class="shared-comp">
+            <span class="pedal-label" style="color:var(--brake)">Brake</span>
+            <div class="pedal-track">
+                <div class="pedal-fill" id="brake-fill" style="background:var(--brake)"></div>
+                <div class="pedal-thumb" id="brake-thumb" style="background:var(--brake)"></div>
+            </div>
+            <span class="val-text" id="brake-val">0%</span>
+        </div>
+        <div id="shared-gas" class="shared-comp">
+            <span class="pedal-label" style="color:var(--gas)">Gas</span>
+            <div class="pedal-track">
+                <div class="pedal-fill" id="gas-fill" style="background:var(--gas)"></div>
+                <div class="pedal-thumb" id="gas-thumb" style="background:var(--gas)"></div>
+            </div>
+            <span class="val-text" id="gas-val">0%</span>
+        </div>
+    </div>
+
+    <script>
+        const ws = new WebSocket(`ws://${window.location.hostname}:8765`);
+        const wsStatus = document.getElementById('ws-status');
+        const debugText = document.getElementById('debug-text');
+        const wheelImg = document.getElementById('wheel-img');
+        const steerVal = document.getElementById('steer-val');
+        
+        let tiltOffset = 0, currentTilt = 0, steerOutput = 0;
+        let gearUpPressed = 0, gearDownPressed = 0, btnTPressed = 0, btnRPressed = 0;
+
+        ws.onopen = () => { wsStatus.innerText = "CONNECTED"; wsStatus.style.color = "#2ecc71"; };
+
+        const sharedWheel = document.getElementById('shared-wheel');
+        const sharedBrake = document.getElementById('shared-brake');
+        const sharedGas = document.getElementById('shared-gas');
+
+        function setMode(mode) {
+            document.querySelectorAll('.main-row').forEach(r => r.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if (mode === 'street') {
+                document.getElementById('streetMode').classList.add('active');
+                document.getElementById('tabStreet').classList.add('active');
+                document.getElementById('wheel-slot-1').appendChild(sharedWheel);
+                document.getElementById('brake-slot-1').appendChild(sharedBrake);
+                document.getElementById('gas-slot-1').appendChild(sharedGas);
+            } else {
+                document.getElementById('rallyMode').classList.add('active');
+                document.getElementById('tabRally').classList.add('active');
+                document.getElementById('wheel-slot-2').appendChild(sharedWheel);
+                document.getElementById('brake-slot-2').appendChild(sharedBrake);
+                document.getElementById('gas-slot-2').appendChild(sharedGas);
+            }
+        }
+        document.getElementById('tabStreet').onclick = () => setMode('street');
+        document.getElementById('tabRally').onclick = () => setMode('rally');
+        setMode('street');
+
+        document.getElementById('fsBtn').onclick = (e) => {
+            e.preventDefault();
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        };
+        document.getElementById('calibrateBtn').onclick = (e) => { e.preventDefault(); tiltOffset = currentTilt; };
+
+        const pedals = {
+            gas: { val: 0, box: document.getElementById('shared-gas'), thumb: document.getElementById('gas-thumb'), fill: document.getElementById('gas-fill'), label: document.getElementById('gas-val') },
+            brake: { val: 0, box: document.getElementById('shared-brake'), thumb: document.getElementById('brake-thumb'), fill: document.getElementById('brake-fill'), label: document.getElementById('brake-val') },
+            clutch: { val: 0, box: document.getElementById('clutch-box'), thumb: document.getElementById('clutch-thumb'), fill: document.getElementById('clutch-fill'), label: document.getElementById('clutch-val') },
+            handbrake: { val: 0, box: document.getElementById('hb-box'), thumb: document.getElementById('hb-thumb'), fill: document.getElementById('hb-fill'), label: document.getElementById('hb-val') }
+        };
+
+        function setupPedal(id, isDownward) {
+            const p = pedals[id];
+            const track = p.box.querySelector('.pedal-track');
+            let activeTouchId = null;
+
+            const handleTouch = (touch) => {
+                const rect = track.getBoundingClientRect();
+                const touchY = touch.clientY;
+                let pct;
+                const thumbHeight = (id === 'handbrake') ? 80 : 60;
+                if (isDownward) {
+                    pct = (touchY - rect.top) / rect.height;
+                    p.thumb.style.top = (pct * (rect.height - thumbHeight)) + 'px';
+                    p.thumb.style.bottom = 'auto';
+                    p.fill.style.top = '0px'; p.fill.style.bottom = 'auto';
+                } else {
+                    pct = (rect.bottom - touchY) / rect.height;
+                    p.thumb.style.bottom = (pct * (rect.height - thumbHeight)) + 'px';
+                    p.thumb.style.top = 'auto';
+                }
+                pct = Math.max(0, Math.min(1, pct));
+                p.val = pct;
+                p.fill.style.height = (pct * 100) + '%';
+                p.label.innerText = Math.round(pct * 100) + '%';
+            };
+
+            p.box.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                activeTouchId = e.changedTouches[0].identifier;
+                handleTouch(e.changedTouches[0]);
+            }, {passive: false});
+
+            p.box.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === activeTouchId) handleTouch(e.changedTouches[i]);
+                }
+            }, {passive: false});
+
+            const reset = () => {
+                p.val = 0;
+                if(isDownward) p.thumb.style.top = '0px'; else p.thumb.style.bottom = '0px';
+                p.fill.style.height = '0%'; p.label.innerText = '0%'; activeTouchId = null;
+            };
+            p.box.addEventListener('touchend', reset);
+            p.box.addEventListener('touchcancel', reset);
+        }
+
+        setupPedal('gas', false); setupPedal('brake', false);
+        setupPedal('clutch', true); setupPedal('handbrake', true);
+
+        function setupButton(id, onDown, onUp) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            const down = (e) => {
+                e.preventDefault();
+                el.classList.add('active');
+                onDown();
+            };
+            const up = (e) => {
+                e.preventDefault();
+                el.classList.remove('active');
+                onUp();
+            };
+            el.addEventListener('pointerdown', down);
+            el.addEventListener('pointerup', up);
+            el.addEventListener('pointercancel', up);
+            el.addEventListener('pointerleave', up);
+        }
+
+        setupButton('gearUp', () => { gearUpPressed = 1; }, () => { gearUpPressed = 0; });
+        setupButton('gearDown', () => { gearDownPressed = 1; }, () => { gearDownPressed = 0; });
+        setupButton('btnT', () => { btnTPressed = 1; }, () => { btnTPressed = 0; });
+        setupButton('btnR', () => { btnRPressed = 1; }, () => { btnRPressed = 0; });
+
+        document.getElementById('gyroBtn').onclick = (e) => {
+            e.preventDefault();
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(state => { if (state === 'granted') startGyro(); });
+            } else { startGyro(); }
+        };
+
+        function startGyro() {
+            document.getElementById('gyroBtn').style.display = 'none';
+            window.addEventListener('deviceorientation', (e) => {
+                const orientation = screen.orientation ? screen.orientation.type : window.orientation;
+                let rawTilt = 0;
+                if (orientation === 'landscape-primary' || orientation === 90) rawTilt = -e.beta;
+                else if (orientation === 'landscape-secondary' || orientation === -90) rawTilt = e.beta;
+                else rawTilt = e.gamma;
+                currentTilt = rawTilt;
+                let calibratedTilt = currentTilt - tiltOffset;
+                steerOutput = (calibratedTilt / 75) * -1; 
+                steerOutput = Math.max(-1, Math.min(1, steerOutput));
+                wheelImg.style.transform = `rotate(${steerOutput * 180}deg)`;
+                steerVal.innerText = steerOutput.toFixed(2);
+                debugText.innerText = `TILT: ${calibratedTilt.toFixed(1)}°`;
+            }, true);
+        }
+
+        setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+                let g = 0; if(gearUpPressed) g = 1; else if(gearDownPressed) g = -1;
+                ws.send(`${pedals.gas.val.toFixed(2)}|${pedals.brake.val.toFixed(2)}|${pedals.clutch.val.toFixed(2)}|${steerOutput.toFixed(3)}|${g}|${btnTPressed}|${btnRPressed}|${pedals.handbrake.val.toFixed(2)}`);
+            }
+        }, 10);
+    </script>
+</body>
+</html>
