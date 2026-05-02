@@ -68,10 +68,13 @@ async def telemetry_loop():
                 speed = outgauge_data[5] * 3.6 # m/s to km/h
                 rpm = outgauge_data[6]
                 turbo = outgauge_data[7] # Turbo pressure in Bar
+                eng_temp = outgauge_data[8]
+                fuel = outgauge_data[9] * 100
+                oil_temp = outgauge_data[11]
                 dash_lights = outgauge_data[13] # showLights: Bitfield for currently ON warnings
                 
-                # Format: "T|SPEED|RPM|GEAR|LIGHTS|TURBO"
-                payload = f"T|{speed:.0f}|{rpm:.0f}|{gear}|{dash_lights}|{turbo:.2f}"
+                # Format: "T|SPEED|RPM|GEAR|LIGHTS|TURBO|FUEL|ENGTEMP|OILTEMP"
+                payload = f"T|{speed:.0f}|{rpm:.0f}|{gear}|{dash_lights}|{turbo:.2f}|{fuel:.0f}|{eng_temp:.0f}|{oil_temp:.0f}"
                 
                 if connected_clients:
                     # Broadcast to all connected WebSockets

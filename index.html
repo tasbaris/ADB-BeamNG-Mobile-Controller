@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,108 +19,406 @@
             --border: #222333;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; font-family: 'Rajdhani', sans-serif; }
-        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            touch-action: none;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
         body {
-            background: var(--bg); color: #fff; margin: 0; height: 100vh; overflow: hidden;
-            display: flex; flex-direction: column; padding: 10px; gap: 10px;
+            background: var(--bg);
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
         }
 
         /* TOP DASHBOARD */
         .dash-board {
-            height: 110px; background: var(--panel); border: 2px solid var(--border); border-radius: 12px;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5);
+            height: 110px;
+            background: var(--panel);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
-        .dash-section { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; }
-        
-        .dash-val { font-family: 'Orbitron', sans-serif; font-size: 42px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); line-height: 1; }
-        .dash-label { font-size: 14px; color: #666; font-weight: 700; letter-spacing: 2px; margin-top: 5px; }
+        .dash-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 30%;
+        }
+
+        .dash-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+            line-height: 1;
+        }
+
+        .dash-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
 
         .gear-box {
-            width: 80px; height: 80px; background: #000; border: 3px solid var(--accent); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Orbitron', sans-serif; font-size: 55px; font-weight: 900; color: #fff;
+            width: 80px;
+            height: 80px;
+            background: #000;
+            border: 3px solid var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 55px;
+            font-weight: 900;
+            color: #fff;
             box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px var(--accent-glow);
         }
 
         .rpm-leds {
-            position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 4px; padding: 5px 15px; background: #000; border: 2px solid var(--border);
-            border-top: none; border-radius: 0 0 10px 10px;
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            padding: 5px 15px;
+            background: #000;
+            border: 2px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
         }
-        .led { width: 15px; height: 8px; border-radius: 2px; background: #222; transition: background 0.05s; }
-        .led.g { background: var(--safe); box-shadow: 0 0 8px var(--safe); }
-        .led.y { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
-        .led.r { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
 
-        /* INDICATORS */
-        .indicators { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 900; color: #333; text-align: center; }
-        .ind { transition: color 0.2s, text-shadow 0.2s; }
-        .ind.active.abs { color: var(--warning); text-shadow: 0 0 8px var(--warning); }
-        .ind.active.esc { color: var(--accent); text-shadow: 0 0 8px var(--accent); }
-        .ind.active.check { color: var(--danger); text-shadow: 0 0 8px var(--danger); }
-        .ind.active.brk { color: var(--danger); text-shadow: 0 0 8px var(--danger); }
+        .led {
+            width: 15px;
+            height: 8px;
+            border-radius: 2px;
+            background: #222;
+            transition: background 0.05s;
+        }
+
+        .led.g {
+            background: var(--safe);
+            box-shadow: 0 0 8px var(--safe);
+        }
+
+        .led.y {
+            background: var(--warning);
+            box-shadow: 0 0 8px var(--warning);
+        }
+
+        .led.r {
+            background: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+        }
+
+        /* INDICATORS & TEMPS */
+        .indicators {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 900;
+            color: #333;
+            text-align: center;
+        }
+
+        .ind {
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .ind.active.abs {
+            color: var(--warning);
+            text-shadow: 0 0 8px var(--warning);
+        }
+
+        .ind.active.esc {
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--accent);
+        }
+
+        .ind.active.check {
+            color: var(--danger);
+            text-shadow: 0 0 8px var(--danger);
+        }
+
+        .ind.active.brk {
+            color: var(--danger);
+            text-shadow: 0 0 8px var(--danger);
+        }
+
+        .temp-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 45px;
+        }
+
+        .temp-label {
+            font-size: 10px;
+            color: #666;
+            font-weight: 700;
+            margin-top: -2px;
+        }
+
+        .temp-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
 
         /* STATUS & FS */
-        .sys-bar { position: absolute; top: 10px; right: 15px; display: flex; gap: 10px; align-items: center; z-index: 100; }
-        .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); }
-        .conn-dot.on { background: var(--safe); box-shadow: 0 0 8px var(--safe); }
-        #fsBtn { background: transparent; border: 1px solid #555; color: #888; border-radius: 4px; padding: 2px 8px; font-size: 10px; }
+        .sys-bar {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .conn-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--danger);
+        }
+
+        .conn-dot.on {
+            background: var(--safe);
+            box-shadow: 0 0 8px var(--safe);
+        }
+
+        #fsBtn {
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 10px;
+        }
 
         /* MAIN CONTROLS */
-        .main-stage { flex: 1; display: flex; gap: 10px; }
+        .main-stage {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
 
         /* SIDE BUTTONS */
-        .btn-col { width: 120px; display: flex; flex-direction: column; gap: 8px; justify-content: space-between; }
-        .action-btn {
-            flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #888; font-weight: 700; font-size: 14px; transition: all 0.1s;
+        .btn-col {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: space-between;
         }
-        .action-btn.active { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255,255,255,0.5); transform: scale(0.95); }
-        .action-btn.nos.active { background: var(--accent); box-shadow: 0 0 20px var(--accent); }
+
+        .action-btn {
+            flex: 1;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.1s;
+        }
+
+        .action-btn.active {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transform: scale(0.95);
+        }
+
+        .action-btn.nos.active {
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent);
+        }
 
         /* CENTER AREA */
-        .center-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-        
-        .top-row { display: flex; gap: 8px; height: 50px; }
-        .shift-btn { flex: 2; background: #111; border: 2px solid #444; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #fff; }
-        .shift-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
-        
-        /* PEDALS & WHEEL */
-        .drive-row { flex: 1; display: flex; gap: 10px; }
-        
-        .pedal-wrap { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        .pedal {
-            flex: 1; background: #0a0a0f; border: 2px solid var(--border); border-radius: 12px;
-            position: relative; overflow: hidden; display: flex; justify-content: center;
+        .center-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .pedal-fill { position: absolute; bottom: 0; left: 0; width: 100%; opacity: 0.8; pointer-events: none; transition: height 0.05s; }
-        .clutch-fill { background: linear-gradient(0deg, #2c3e50, #95a5a6); }
-        .brake-fill { background: linear-gradient(0deg, #900, var(--danger)); }
-        .gas-fill { background: linear-gradient(0deg, #090, var(--safe)); }
-        .pedal-cap { position: absolute; width: 90%; height: 20px; background: rgba(255,255,255,0.2); border-radius: 5px; pointer-events: none; transition: bottom 0.05s; }
-        .p-label { text-align: center; font-size: 13px; font-weight: 700; color: #555; }
+
+        .top-row {
+            display: flex;
+            gap: 8px;
+            height: 50px;
+        }
+
+        .shift-btn {
+            flex: 2;
+            background: #111;
+            border: 2px solid #444;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .shift-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* PEDALS & WHEEL */
+        .drive-row {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
+
+        .pedal-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .pedal {
+            flex: 1;
+            background: #0a0a0f;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pedal-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0.8;
+            pointer-events: none;
+            transition: height 0.05s;
+        }
+
+        .clutch-fill {
+            background: linear-gradient(0deg, #2c3e50, #95a5a6);
+        }
+
+        .brake-fill {
+            background: linear-gradient(0deg, #900, var(--danger));
+        }
+
+        .gas-fill {
+            background: linear-gradient(0deg, #090, var(--safe));
+        }
+
+        .pedal-cap {
+            position: absolute;
+            width: 90%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            pointer-events: none;
+            transition: bottom 0.05s;
+        }
+
+        .p-label {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+        }
 
         .wheel-area {
-            flex: 2; background: var(--panel); border: 2px solid var(--border); border-radius: 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+            flex: 2;
+            background: var(--panel);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
+
         .wheel-graphic {
-            width: 150px; height: 150px; border: 12px solid #222; border-radius: 50%; position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5);
+            width: 150px;
+            height: 150px;
+            border: 12px solid #222;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
             transition: transform 0.05s linear;
         }
-        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: #111; border-radius: 50%; border: 2px solid #333; }
-        .wheel-marker { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 10px; height: 24px; background: var(--accent); border-radius: 2px; }
 
-        .sensor-btn { background: var(--accent); color: #000; font-weight: 900; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; margin-top: 15px; cursor: pointer; }
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #111;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
 
+        .wheel-marker {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .sensor-btn {
+            background: var(--accent);
+            color: #000;
+            font-weight: 900;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="dash-board">
@@ -129,39 +428,76 @@
         </div>
 
         <div class="rpm-leds" id="led-strip">
-            <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
-            <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
-            <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
+            <div class="led"></div>
         </div>
 
         <div class="dash-section">
             <span class="dash-val" id="tele-speed">0</span>
-            <span class="dash-label">KM/H</span>
+            <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                <div
+                    style="display: flex; justify-content: space-between; width: 70%; margin-top: 0; align-items: flex-end;">
+                    <span class="dash-label" style="margin: 0;">KM/H</span>
+                    <span class="dash-label" id="fuel-text"
+                        style="margin: 0; color: var(--safe); font-size: 10px;">100%</span>
+                </div>
+                <div
+                    style="width: 70%; height: 6px; background: #111; border-radius: 3px; margin-top: 2px; border: 1px solid #333; overflow: hidden; position: relative;">
+                    <div id="fuel-bar"
+                        style="height: 100%; width: 100%; background: var(--safe); box-shadow: 0 0 5px var(--safe); transition: width 0.1s linear;">
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="temp-box">
+                <span class="temp-val" id="tele-oil">0</span>
+                <span class="temp-label">OIL °C</span>
+            </div>
+
             <div class="indicators">
                 <span class="ind abs" id="ind-abs">ABS</span>
                 <span class="ind esc" id="ind-esc">TCS</span>
             </div>
-            
+
             <div class="gear-box" id="tele-gear">N</div>
-            
+
             <div class="indicators">
                 <span class="ind check" id="ind-chk">CHK</span>
                 <span class="ind brk" id="ind-brk">BRK</span>
+            </div>
+
+            <div class="temp-box">
+                <span class="temp-val" id="tele-eng">0</span>
+                <span class="temp-label">ENG °C</span>
             </div>
         </div>
 
         <div class="dash-section">
             <span class="dash-val" id="tele-rpm">0</span>
             <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-                <div style="display: flex; justify-content: space-between; width: 70%; margin-top: 0; align-items: flex-end;">
-                     <span class="dash-label" style="margin: 0;">RPM</span>
-                     <span class="dash-label" id="turbo-text" style="margin: 0; color: var(--accent); font-size: 10px;">0.00 BAR</span>
+                <div
+                    style="display: flex; justify-content: space-between; width: 70%; margin-top: 0; align-items: flex-end;">
+                    <span class="dash-label" style="margin: 0;">RPM</span>
+                    <span class="dash-label" id="turbo-text"
+                        style="margin: 0; color: var(--accent); font-size: 10px;">0.00 BAR</span>
                 </div>
-                <div style="width: 70%; height: 6px; background: #111; border-radius: 3px; margin-top: 2px; border: 1px solid #333; overflow: hidden; position: relative;">
-                    <div id="turbo-bar" style="height: 100%; width: 0%; background: var(--accent); box-shadow: 0 0 5px var(--accent); transition: width 0.1s linear;"></div>
+                <div
+                    style="width: 70%; height: 6px; background: #111; border-radius: 3px; margin-top: 2px; border: 1px solid #333; overflow: hidden; position: relative;">
+                    <div id="turbo-bar"
+                        style="height: 100%; width: 0%; background: var(--accent); box-shadow: 0 0 5px var(--accent); transition: width 0.1s linear;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -231,8 +567,12 @@
         const tSpeed = document.getElementById('tele-speed');
         const tRpm = document.getElementById('tele-rpm');
         const tGear = document.getElementById('tele-gear');
+        const tFuelText = document.getElementById('fuel-text');
+        const tFuelBar = document.getElementById('fuel-bar');
+        const tEng = document.getElementById('tele-eng');
+        const tOil = document.getElementById('tele-oil');
         const leds = document.querySelectorAll('.led');
-        
+
         const indAbs = document.getElementById('ind-abs');
         const indEsc = document.getElementById('ind-esc');
         const indChk = document.getElementById('ind-chk');
@@ -240,29 +580,29 @@
 
         // State Tracking
         let steerOutput = 0, tiltOffset = 0, currentTilt = 0;
-        let s = { gas:0, brake:0, clutch:0, hb:0, vU:0, vD:0, t:0, r:0, lgt:0, esc:0, fwd:0, nos:0, cam:0 };
+        let s = { gas: 0, brake: 0, clutch: 0, hb: 0, vU: 0, vD: 0, t: 0, r: 0, lgt: 0, esc: 0, fwd: 0, nos: 0, cam: 0 };
 
         // Parse OutGauge Data
         ws.onmessage = (e) => {
             const p = e.data.split('|');
-            if(p[0] === 'T') {
+            if (p[0] === 'T') {
                 tSpeed.innerText = p[1];
                 tRpm.innerText = p[2];
                 let g = parseInt(p[3]);
-                
+
                 // OutGauge Gear mapping: 0=R, 1=N, 2=1, 3=2...
                 if (g === 0) tGear.innerText = 'R';
                 else if (g === 1) tGear.innerText = 'N';
                 else tGear.innerText = (g - 1).toString();
-                
+
                 // LED Logic (Max ~7500 RPM for generic display)
                 let rpm = parseInt(p[2]);
                 let activeLeds = Math.min(12, Math.floor((rpm / 7500) * 12));
                 leds.forEach((led, i) => {
                     led.className = 'led';
-                    if(i < activeLeds) {
-                        if(i < 6) led.classList.add('g');
-                        else if(i < 10) led.classList.add('y');
+                    if (i < activeLeds) {
+                        if (i < 6) led.classList.add('g');
+                        else if (i < 10) led.classList.add('y');
                         else led.classList.add('r');
                     }
                 });
@@ -281,7 +621,29 @@
                     let turboVal = parseFloat(p[5]);
                     let turboPct = Math.max(0, Math.min(100, (turboVal / 2.5) * 100));
                     turboBar.style.width = turboPct + '%';
-                    if(turboText) turboText.innerText = turboVal.toFixed(2) + ' BAR';
+                    if (turboText) turboText.innerText = turboVal.toFixed(2) + ' BAR';
+                }
+
+                // New Telemetry (Fuel, Eng Temp, Oil Temp)
+                if (p.length > 8) {
+                    let fuelVal = parseInt(p[6]);
+                    let engVal = parseInt(p[7]);
+                    let oilVal = parseInt(p[8]);
+
+                    tEng.innerText = engVal;
+                    tOil.innerText = oilVal;
+
+                    tFuelText.innerText = `${fuelVal}%`;
+                    tFuelBar.style.width = fuelVal + '%';
+
+                    tEng.style.color = engVal > 105 ? 'var(--danger)' : '#fff';
+                    tOil.style.color = oilVal > 115 ? 'var(--danger)' : '#fff';
+
+                    // Fuel warning color
+                    let fuelColor = fuelVal < 15 ? 'var(--danger)' : 'var(--safe)';
+                    tFuelText.style.color = fuelColor;
+                    tFuelBar.style.background = fuelColor;
+                    tFuelBar.style.boxShadow = `0 0 5px ${fuelColor}`;
                 }
             }
         };
@@ -294,21 +656,21 @@
 
         // Touch Pedal Setup
         function setupPedal(id, key, isInv) {
-            const box = document.getElementById(id+'-box');
-            const fill = document.getElementById(id+'-fill');
-            const cap = document.getElementById(id+'-cap');
+            const box = document.getElementById(id + '-box');
+            const fill = document.getElementById(id + '-fill');
+            const cap = document.getElementById(id + '-cap');
             let tid = null;
 
             const move = (t) => {
                 const r = box.getBoundingClientRect();
-                let pct = isInv ? (t.clientY - r.top)/r.height : (r.bottom - t.clientY)/r.height;
+                let pct = isInv ? (t.clientY - r.top) / r.height : (r.bottom - t.clientY) / r.height;
                 pct = Math.max(0, Math.min(1, pct));
                 s[key] = pct;
-                
-                fill.style.height = (pct*100)+'%';
+
+                fill.style.height = (pct * 100) + '%';
                 cap.style.transform = 'none';
-                
-                if(isInv) {
+
+                if (isInv) {
                     fill.style.top = '0'; fill.style.bottom = 'auto';
                     cap.style.top = (pct * (r.height - 20)) + 'px'; cap.style.bottom = 'auto';
                 } else {
@@ -317,15 +679,15 @@
                 }
             };
 
-            const reset = () => { 
-                s[key]=0; fill.style.height='0%'; 
-                cap.style.transform='none';
-                if(isInv) { cap.style.top='0px'; } else { cap.style.bottom='0px'; }
-                tid=null; 
+            const reset = () => {
+                s[key] = 0; fill.style.height = '0%';
+                cap.style.transform = 'none';
+                if (isInv) { cap.style.top = '0px'; } else { cap.style.bottom = '0px'; }
+                tid = null;
             };
-            
-            box.addEventListener('touchstart', e => { e.preventDefault(); tid = e.changedTouches[0].identifier; move(e.changedTouches[0]); }, {passive:false});
-            box.addEventListener('touchmove', e => { e.preventDefault(); for(let t of e.changedTouches) if(t.identifier===tid) move(t); }, {passive:false});
+
+            box.addEventListener('touchstart', e => { e.preventDefault(); tid = e.changedTouches[0].identifier; move(e.changedTouches[0]); }, { passive: false });
+            box.addEventListener('touchmove', e => { e.preventDefault(); for (let t of e.changedTouches) if (t.identifier === tid) move(t); }, { passive: false });
             box.addEventListener('touchend', reset); box.addEventListener('touchcancel', reset);
         }
 
@@ -336,8 +698,8 @@
         // Button Setup (Touch optimized)
         function setupBtn(id, key) {
             const el = document.getElementById(id);
-            el.addEventListener('touchstart', e => { e.preventDefault(); s[key]=1; el.classList.add('active'); }, {passive:false});
-            const up = (e) => { if(e) e.preventDefault(); s[key]=0; el.classList.remove('active'); };
+            el.addEventListener('touchstart', e => { e.preventDefault(); s[key] = 1; el.classList.add('active'); }, { passive: false });
+            const up = (e) => { if (e) e.preventDefault(); s[key] = 0; el.classList.remove('active'); };
             el.addEventListener('touchend', up); el.addEventListener('touchcancel', up);
         }
 
@@ -350,7 +712,7 @@
         // Gyroscope
         document.getElementById('gyroBtn').onclick = () => {
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(st => { if(st==='granted') startGyro(); });
+                DeviceOrientationEvent.requestPermission().then(st => { if (st === 'granted') startGyro(); });
             } else startGyro();
         };
 
@@ -359,7 +721,7 @@
             window.addEventListener('deviceorientation', e => {
                 let angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
                 let isLandscape = window.innerWidth > window.innerHeight;
-                
+
                 let raw = 0;
                 if (isLandscape) {
                     // Horizontal mode check (-90 or 270 angle)
@@ -367,21 +729,22 @@
                 } else {
                     raw = e.gamma;
                 }
-                
+
                 currentTilt = raw;
-                steerOutput = Math.max(-1, Math.min(1, (raw - tiltOffset)/75 * -1));
-                document.getElementById('wheel-img').style.transform = `rotate(${steerOutput*180}deg)`;
+                steerOutput = Math.max(-1, Math.min(1, (raw - tiltOffset) / 75 * -1));
+                document.getElementById('wheel-img').style.transform = `rotate(${steerOutput * 180}deg)`;
             });
         }
 
         // Data Loop
         setInterval(() => {
-            if(ws.readyState === 1) {
-                let g = 0; if(s.vU) g=1; else if(s.vD) g=-1;
+            if (ws.readyState === 1) {
+                let g = 0; if (s.vU) g = 1; else if (s.vD) g = -1;
                 // gas|brake|clutch|steer|gear|T|R|HB|Light|ESC|4WD|NOS|Cam
                 ws.send(`${s.gas.toFixed(2)}|${s.brake.toFixed(2)}|${s.clutch.toFixed(2)}|${steerOutput.toFixed(3)}|${g}|${s.t}|${s.r}|${s.hb}|${s.lgt}|${s.esc}|${s.fwd}|${s.nos}|${s.cam}`);
             }
         }, 15);
     </script>
 </body>
+
 </html>
