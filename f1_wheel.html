@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BeamNG Pro Cockpit v3 (F1 Mode)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
+
+        :root {
+            --bg: #000;
+            --carbon: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            --accent: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.4);
+            --danger: #ff2a2a;
+            --safe: #00ff66;
+            --warning: #ffb700;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            touch-action: none;
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* GRIPS */
+        .grip {
+            width: 22vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+            background: linear-gradient(90deg, #111, #050505);
+            border-radius: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .grip.right {
+            background: linear-gradient(-90deg, #111, #050505);
+        }
+
+        .paddle {
+            flex: 1;
+            background: #151515;
+            border: 2px solid #333;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ccc;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s;
+        }
+
+        .paddle:active,
+        .paddle.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+            transform: scale(0.95);
+        }
+
+        .trigger {
+            flex: 2.5;
+            background: #0a0a0a;
+            border: 2px solid #222;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            box-shadow: inset 0 5px 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .trigger-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            pointer-events: none;
+            transition: height 0.05s;
+        }
+
+        .brake-fill {
+            background: linear-gradient(0deg, #500, var(--danger));
+        }
+
+        .gas-fill {
+            background: linear-gradient(0deg, #050, var(--safe));
+        }
+
+        .trigger-label {
+            position: absolute;
+            bottom: 15px;
+            font-size: 18px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+
+        .clutch-fill {
+            background: linear-gradient(0deg, #333, #888);
+        }
+
+        .p-val-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 900;
+            color: #fff;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .version-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            color: #444;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .dev-credit {
+            position: absolute;
+            bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.15);
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .dev-credit:hover {
+            color: var(--accent);
+        }
+
+        /* CENTER PLATE */
+        .center-plate {
+            width: 52vw;
+            height: 100vh;
+            background: var(--carbon);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* F1 DASH */
+        .f1-dash {
+            width: 90%;
+            height: 70%;
+            background: #050508;
+            border: 4px solid #333;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 229, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            position: relative;
+            margin-top: 18px;
+        }
+
+        .rpm-leds {
+            display: flex;
+            gap: 5px;
+            padding: 5px 20px;
+            background: #000;
+            border-radius: 10px;
+            border: 1px solid #222;
+            margin-bottom: 10px;
+            width: 95%;
+            justify-content: space-between;
+        }
+
+        .led {
+            flex: 1;
+            height: 15px;
+            border-radius: 3px;
+            background: #111;
+        }
+
+        .led.g {
+            background: var(--safe);
+            box-shadow: 0 0 10px var(--safe);
+        }
+
+        .led.y {
+            background: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        .led.r {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .led.b {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .dash-main {
+            display: flex;
+            width: 100%;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gear-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 110px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            width: 100px;
+            text-align: center;
+        }
+
+        .speed-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+            /* Hız değiştiğinde sağa sola kaymayı engeller */
+        }
+
+        .speed-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 70px;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent-glow);
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .speed-lbl {
+            font-size: 16px;
+            color: #888;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .dash-footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 2px solid #222;
+            font-size: 15px;
+            font-weight: 700;
+            color: #aaa;
+            gap: 5px;
+        }
+
+        .dash-footer div {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .dash-footer span {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            display: inline-block;
+            min-width: 45px;
+            /* Değer değiştiğinde metnin kaymasını engeller */
+            text-align: left;
+            margin-left: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ROTARY & PUSH BUTTONS AROUND DASH */
+        .btn-cluster {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .cluster-left {
+            left: 0;
+            top: 45%;
+            transform: translateY(-50%);
+        }
+
+        .cluster-right {
+            right: 0;
+            top: 45%;
+            transform: translateY(-50%);
+        }
+
+        .f1-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #222, #000);
+            border: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            color: #ccc;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6);
+            transition: all 0.1s;
+        }
+
+        .f1-btn:active,
+        .f1-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: scale(0.9);
+        }
+
+        .f1-btn.nos {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .f1-btn.nos:active,
+        .f1-btn.nos.active {
+            background: var(--danger);
+            color: #fff;
+            box-shadow: 0 0 20px var(--danger);
+        }
+
+        /* STEERING BAR */
+        .steer-bar-container {
+            width: 80%;
+            height: 8px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            margin: 10px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .steer-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            position: absolute;
+            left: 50%;
+            transition: width 0.05s linear, left 0.05s linear;
+        }
+
+        /* PEDAL VALUES IN DASH */
+        .pedal-values {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #888;
+        }
+
+        .p-val {
+            color: #fff;
+            margin-left: 3px;
+            font-family: 'Orbitron', sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .p-g {
+            color: var(--safe);
+        }
+
+        .p-b {
+            color: var(--danger);
+        }
+
+        .p-c {
+            color: var(--warning);
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .sys-btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .conn-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--danger);
+            margin-top: 5px;
+        }
+
+        .conn-dot.on {
+            background: var(--safe);
+            box-shadow: 0 0 10px var(--safe);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LEFT GRIP -->
+    <div class="grip left">
+        <div class="paddle" id="btnUp">SHIFT +</div>
+        <div style="flex: 2.5; display: flex; gap: 10px; width: 100%;">
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <div class="trigger" id="clutch-box">
+                    <div class="trigger-fill clutch-fill" id="clutch-fill"></div>
+                    <div class="trigger-label" style="font-size: 11px;">CLU</div>
+                </div>
+                <div class="p-val-display" style="color: #888; font-size: 12px;">C:<span id="val-clutch">0.00</span></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <div class="trigger" id="brake-box">
+                    <div class="trigger-fill brake-fill" id="brake-fill"></div>
+                    <div class="trigger-label" style="font-size: 11px;">BRK</div>
+                </div>
+                <div class="p-val-display" style="color: var(--danger); font-size: 12px;">B:<span id="val-brake">0.00</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CENTER PLATE -->
+    <div class="center-plate">
+        <div class="top-bar">
+            <a href="index.html" class="sys-btn" style="color:var(--accent); border-color:var(--accent);">CLASSIC
+                MODE</a>
+            <button class="sys-btn" id="gyroBtn">ACTIVATE GYRO</button>
+            <div style="display:flex; gap:10px;">
+                <button class="sys-btn" id="fsBtn">⛶</button>
+                <div class="conn-dot" id="ws-status"></div>
+            </div>
+        </div>
+
+        <div class="btn-cluster cluster-left">
+            <div class="f1-btn" id="btnCam">CAM</div>
+            <div class="f1-btn" id="btnLight">LGT</div>
+            <div class="f1-btn nos" id="btnNOS">NOS</div>
+        </div>
+
+        <div class="f1-dash">
+            <div class="rpm-leds" id="led-strip">
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+                <div class="led"></div>
+            </div>
+
+            <div class="dash-main">
+                <div class="gear-display" id="tele-gear">N</div>
+                <div class="speed-display">
+                    <div class="speed-val" id="tele-speed">0</div>
+                    <div class="speed-lbl">KM/H</div>
+                </div>
+            </div>
+
+            <div class="dash-footer">
+                <div onclick="promptMaxRpm()" style="cursor: pointer;" title="Tap to set Max RPM">RPM: <span id="tele-rpm">0</span></div>
+                <div>ENG: <span id="tele-eng">0</span></div>
+                <div>OIL: <span id="tele-oil">0</span></div>
+                <div>FUEL: <span id="tele-fuel">100%</span></div>
+            </div>
+        </div>
+
+        <div class="steer-bar-container">
+            <div id="steer-fill" class="steer-bar-fill"></div>
+        </div>
+        <div class="version-tag">v2.2.0</div>
+        <a href="https://github.com/tasbaris" class="dev-credit" target="_blank">DEVELOPED BY TASBARIS</a>
+
+        <div class="btn-cluster cluster-right">
+            <div class="f1-btn" id="btnStart">STRT</div>
+            <div class="f1-btn" id="btnReset">RST</div>
+            <div class="f1-btn" id="btnESC">ESC</div>
+        </div>
+    </div>
+
+    <!-- RIGHT GRIP -->
+    <div class="grip right">
+        <div class="paddle" id="btnDown">SHIFT -</div>
+        <div style="flex: 2.5; display: flex; flex-direction: column; width: 100%;">
+            <div class="trigger" id="gas-box">
+                <div class="trigger-fill gas-fill" id="gas-fill"></div>
+                <div class="trigger-label">GAS</div>
+            </div>
+            <div class="p-val-display" style="color: var(--safe); font-size: 12px;">G:<span id="val-gas">0.00</span></div>
+        </div>
+    </div>
+
+    <script>
+        const ws = new WebSocket(`ws://${window.location.hostname}:8765`);
+        const wsStatus = document.getElementById('ws-status');
+        ws.onopen = () => wsStatus.classList.add('on');
+        ws.onclose = () => wsStatus.classList.remove('on');
+
+        const tSpeed = document.getElementById('tele-speed');
+        const tRpm = document.getElementById('tele-rpm');
+        const tGear = document.getElementById('tele-gear');
+        const tEng = document.getElementById('tele-eng');
+        const tOil = document.getElementById('tele-oil');
+        const tFuel = document.getElementById('tele-fuel');
+        const leds = document.querySelectorAll('.led');
+        
+        const valGas = document.getElementById('val-gas');
+        const valBrake = document.getElementById('val-brake');
+        const valClutch = document.getElementById('val-clutch');
+        const steerFill = document.getElementById('steer-fill');
+
+        let steerOutput = 0, tiltOffset = 0, currentTilt = 0;
+        let s = { gas: 0, brake: 0, clutch: 0, hb: 0, vU: 0, vD: 0, t: 0, r: 0, lgt: 0, esc: 0, fwd: 0, nos: 0, cam: 0 };
+        let maxRpm = 7000; // Başlangıç taban devri
+
+        function promptMaxRpm() {
+            maxRpm = 3000; // Sıfırlama
+            let rpmEl = document.getElementById('tele-rpm');
+            rpmEl.style.color = "var(--danger)";
+            setTimeout(() => { rpmEl.style.color = "#fff"; }, 500);
+        }
+
+        ws.onmessage = (e) => {
+            const p = e.data.split('|');
+            if (p[0] === 'T') {
+                tSpeed.innerText = p[1];
+                tRpm.innerText = p[2];
+                let g = parseInt(p[3]);
+
+                if (g === 0) tGear.innerText = 'R';
+                else if (g === 1) tGear.innerText = 'N';
+                else tGear.innerText = (g - 1).toString();
+
+                let rpm = parseInt(p[2]);
+                
+                // Otomatik Kalibrasyon: Görülen en yüksek RPM'i kaydet
+                if (rpm > maxRpm) {
+                    maxRpm = rpm;
+                }
+
+                // 15.1 çarpanı ile son LED sadece limitöre tam yaklaşıldığında yanar
+                let activeLeds = Math.min(15, Math.floor((rpm / maxRpm) * 15.1));
+
+                // Shift Light Logic: Full flash at >98% maxRpm
+                const isRedline = (rpm / maxRpm) > 0.98;
+
+                leds.forEach((led, i) => {
+                    led.className = 'led';
+                    if (isRedline) {
+                        // All LEDs flash blue/white at redline with strobe effect
+                        if (Math.floor(Date.now() / 40) % 2 === 0) {
+                            led.classList.add('b');
+                        }
+                    } else if (i < activeLeds) {
+                        if (i < 5) led.classList.add('g');
+                        else if (i < 10) led.classList.add('y');
+                        else led.classList.add('r');
+                    }
+                });
+
+                // Redline Haptic Feedback (Triggers when flashing)
+                if (isRedline && navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+
+                if (p.length > 8) {
+                    tFuel.innerText = parseInt(p[6]) + "%";
+                    tEng.innerText = parseInt(p[7]) + "°C";
+                    tOil.innerText = parseInt(p[8]) + "°C";
+                }
+            }
+        };
+
+        document.getElementById('fsBtn').onclick = () => {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        };
+
+        function setupPedal(id, key, isInv) {
+            const box = document.getElementById(id + '-box');
+            const fill = document.getElementById(id + '-fill');
+            let tid = null;
+
+            const move = (t) => {
+                const r = box.getBoundingClientRect();
+                let pct = isInv ? (t.clientY - r.top) / r.height : (r.bottom - t.clientY) / r.height;
+                pct = Math.max(0, Math.min(1, pct));
+                s[key] = pct;
+                fill.style.height = (pct * 100) + '%';
+                if (isInv) {
+                    fill.style.top = '0'; fill.style.bottom = 'auto';
+                } else {
+                    fill.style.bottom = '0'; fill.style.top = 'auto';
+                }
+            };
+
+            const reset = () => { s[key] = 0; fill.style.height = '0%'; tid = null; };
+
+            box.addEventListener('touchstart', e => { 
+                e.preventDefault(); 
+                tid = e.changedTouches[0].identifier; 
+                move(e.changedTouches[0]); 
+            }, { passive: false });
+            box.addEventListener('touchmove', e => { e.preventDefault(); for (let t of e.changedTouches) if (t.identifier === tid) move(t); }, { passive: false });
+            box.addEventListener('touchend', reset); box.addEventListener('touchcancel', reset);
+        }
+
+        setupPedal('gas', 'gas', false);
+        setupPedal('brake', 'brake', false);
+        setupPedal('clutch', 'clutch', true);
+
+        function setupBtn(id, key) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('touchstart', e => {
+                e.preventDefault();
+                s[key] = 1;
+                el.classList.add('active');
+            }, { passive: false });
+            const up = (e) => { if (e) e.preventDefault(); s[key] = 0; el.classList.remove('active'); };
+            el.addEventListener('touchend', up); el.addEventListener('touchcancel', up);
+        }
+
+        setupBtn('btnUp', 'vU'); setupBtn('btnDown', 'vD');
+        setupBtn('btnStart', 't'); setupBtn('btnReset', 'r');
+        setupBtn('btnLight', 'lgt'); setupBtn('btnESC', 'esc');
+        setupBtn('btnNOS', 'nos'); setupBtn('btnCam', 'cam');
+
+        // Gyroscope
+        let isGyroActive = false;
+        const gyroBtn = document.getElementById('gyroBtn');
+
+        function gyroHandler(e) {
+            let angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+            let isLandscape = window.innerWidth > window.innerHeight;
+
+            let raw = 0;
+            if (isLandscape) {
+                raw = (angle === -90 || angle === 270) ? e.beta : -e.beta;
+            } else {
+                raw = e.gamma;
+            }
+
+            currentTilt = raw;
+            steerOutput = Math.max(-1, Math.min(1, (raw - tiltOffset) / 75 * -1));
+        }
+
+        function activateGyro() {
+            window.addEventListener('deviceorientation', gyroHandler);
+            isGyroActive = true;
+            localStorage.setItem('gyroEnabled', 'true');
+            gyroBtn.innerText = 'DEACTIVATE GYRO';
+            gyroBtn.style.borderColor = 'var(--danger)';
+            gyroBtn.style.color = 'var(--danger)';
+        }
+
+        function deactivateGyro() {
+            window.removeEventListener('deviceorientation', gyroHandler);
+            isGyroActive = false;
+            localStorage.setItem('gyroEnabled', 'false');
+            steerOutput = 0;
+            gyroBtn.innerText = 'ACTIVATE GYRO';
+            gyroBtn.style.borderColor = '#555';
+            gyroBtn.style.color = '#888';
+        }
+
+        function toggleGyro() {
+            if (!isGyroActive) {
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission().then(st => {
+                        if (st === 'granted') activateGyro();
+                    });
+                } else {
+                    activateGyro();
+                }
+            } else {
+                deactivateGyro();
+            }
+        }
+
+        gyroBtn.onclick = toggleGyro;
+
+        if (localStorage.getItem('gyroEnabled') === 'true') {
+            activateGyro();
+        }
+
+        let sendInterval = setInterval(() => {
+            if (ws.readyState === 1) {
+                let g = 0; if (s.vU) g = 1; else if (s.vD) g = -1;
+                ws.send(`${s.gas.toFixed(2)}|${s.brake.toFixed(2)}|${s.clutch.toFixed(2)}|${steerOutput.toFixed(3)}|${g}|${s.t}|${s.r}|${s.hb}|${s.lgt}|${s.esc}|${s.fwd}|${s.nos}|${s.cam}`);
+            }
+
+            // Update UI elements
+            valGas.innerText = s.gas.toFixed(2);
+            valBrake.innerText = s.brake.toFixed(2);
+            valClutch.innerText = s.clutch.toFixed(2);
+
+            // Update steering bar (Horizontal)
+            let steerWidth = Math.abs(steerOutput) * 50;
+            steerFill.style.width = steerWidth + "%";
+            if (steerOutput < 0) {
+                steerFill.style.left = (50 - steerWidth) + "%";
+            } else {
+                steerFill.style.left = "50%";
+            }
+        }, 15);
+
+        window.onbeforeunload = () => {
+            clearInterval(sendInterval);
+            ws.close();
+        };
+    </script>
+</body>
+
+</html>

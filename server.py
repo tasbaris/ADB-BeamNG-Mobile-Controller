@@ -23,30 +23,42 @@ telemetry_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 telemetry_sock.bind((OUTGAUGE_LISTEN_IP, OUTGAUGE_LISTEN_PORT))
 telemetry_sock.setblocking(False)
 
-# Global list to keep track of connected phones
+# Global list and active controller tracking
 connected_clients = set()
+active_controller = None
 
 async def ws_handler(websocket):
     """Handles incoming control data from the mobile device."""
+    global active_controller
     connected_clients.add(websocket)
+    active_controller = websocket # Set this as the primary controller
+    
     client_addr = websocket.remote_address[0]
-    print(f"\n[OK] Mobile device connected: {client_addr}")
+    print(f"\n[OK] Device connected: {client_addr} | Total: {len(connected_clients)}")
+    
     last_log_time = 0
     try:
         async for message in websocket:
+            # Only process messages if this is the latest connected device
+            # This prevents "flickering" when switching between UI pages
+            if websocket != active_controller:
+                continue
+                
             # Forward controls to Lua extension
             cmd_sock.sendto(message.encode('utf-8'), (FORWARD_UDP_IP, FORWARD_UDP_PORT))
             
-            # Log incoming data every 0.5 seconds
             current_time = time.time()
             if current_time - last_log_time >= 0.5:
                 print(f"[UI->LUA] {message}")
                 last_log_time = current_time
                 
     except websockets.exceptions.ConnectionClosed:
-        print(f"\n[!] Connection lost: {client_addr}")
+        pass
     finally:
         connected_clients.remove(websocket)
+        if active_controller == websocket:
+            active_controller = None
+        print(f"\n[!] Device disconnected. Remaining: {len(connected_clients)}")
 
 async def telemetry_loop():
     """Listens for Outgauge packets from BeamNG and broadcasts to all phones."""

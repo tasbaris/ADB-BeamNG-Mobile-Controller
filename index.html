@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BeamNG Pro Cockpit v3</title>
+    <title>BeamNG Pro Cockpit v3 (Classic Ergonomic)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
 
@@ -51,6 +51,7 @@
             padding: 0 20px;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
             position: relative;
+            flex-shrink: 0;
         }
 
         .dash-section {
@@ -68,6 +69,7 @@
             color: var(--accent);
             text-shadow: 0 0 10px var(--accent-glow);
             line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
 
         .dash-label {
@@ -171,10 +173,11 @@
             flex-direction: column;
             align-items: center;
             min-width: 45px;
+            margin: 0 10px;
         }
 
         .temp-label {
-            font-size: 10px;
+            font-size: 14px;
             color: #666;
             font-weight: 700;
             margin-top: -2px;
@@ -182,17 +185,24 @@
 
         .temp-val {
             font-family: 'Orbitron', sans-serif;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: #fff;
             line-height: 1;
         }
 
         /* STATUS & FS */
-        .sys-bar {
+        .sys-bar-left {
             position: absolute;
             top: 10px;
-            right: 15px;
+            left: 10px;
+            z-index: 100;
+        }
+
+        .sys-bar-right {
+            position: absolute;
+            top: 3px;
+            right: 10px;
             display: flex;
             gap: 10px;
             align-items: center;
@@ -211,114 +221,128 @@
             box-shadow: 0 0 8px var(--safe);
         }
 
-        #fsBtn {
+        #fsBtn,
+        #modeBtn {
             background: transparent;
             border: 1px solid #555;
             color: #888;
             border-radius: 4px;
             padding: 2px 8px;
             font-size: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
         }
 
-        /* MAIN CONTROLS */
+        #modeBtn {
+            color: var(--accent);
+            border-color: var(--accent);
+            text-shadow: 0 0 5px var(--accent-glow);
+        }
+
+        /* MAIN CONTROLS (ERGONOMIC CLASSIC) */
         .main-stage {
             flex: 1;
             display: flex;
+            gap: 15px;
+            min-height: 0;
+            /* Parent'ı esnek bırakır */
+        }
+
+        /* 3 COLUMN ERGONOMIC LAYOUT */
+        .zone {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        /* SIDE BUTTONS */
-        .btn-col {
-            width: 120px;
+        .shift-zone {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            justify-content: space-between;
+            flex-direction: row;
+            gap: 10px;
+            justify-content: center;
         }
 
-        .action-btn {
+        .left-zone {
+            width: 18%;
+        }
+
+        .right-zone {
+            width: 37%;
+        }
+
+        .center-box {
             flex: 1;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 10px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            color: #888;
-            font-weight: 700;
-            font-size: 14px;
-            transition: all 0.1s;
+            gap: 15px;
+            background: var(--panel);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
-        .action-btn.active {
-            background: #fff;
-            color: #000;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            transform: scale(0.95);
-        }
-
-        .action-btn.nos.active {
-            background: var(--accent);
-            box-shadow: 0 0 20px var(--accent);
-        }
-
-        /* CENTER AREA */
-        .center-col {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .top-row {
-            display: flex;
-            gap: 8px;
-            height: 50px;
-        }
-
+        /* SHIFT BUTTONS (Easy Thumb Reach) */
         .shift-btn {
-            flex: 2;
-            background: #111;
-            border: 2px solid #444;
-            border-radius: 8px;
+            height: 55px;
+            /* Başparmak için ideal yükseklik */
+            flex: 1;
+            background: linear-gradient(180deg, #1a1b26, #11121a);
+            border: 2px solid #333;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
             font-weight: 900;
-            color: #fff;
+            color: #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s;
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
+        .shift-btn:active,
         .shift-btn.active {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: scale(0.95);
         }
 
-        /* PEDALS & WHEEL */
-        .drive-row {
+        /* PEDALS (Tall for sliding thumb) */
+        .pedals-right {
             flex: 1;
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            min-height: 0;
         }
 
         .pedal-wrap {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 2px;
+            min-height: 0;
         }
 
         .pedal {
             flex: 1;
             background: #0a0a0f;
             border: 2px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             position: relative;
             overflow: hidden;
             display: flex;
             justify-content: center;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.8);
         }
 
         .pedal-fill {
@@ -343,42 +367,128 @@
             background: linear-gradient(0deg, #090, var(--safe));
         }
 
-        .pedal-cap {
-            position: absolute;
-            width: 90%;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            pointer-events: none;
-            transition: bottom 0.05s;
-        }
-
         .p-label {
-            text-align: center;
-            font-size: 13px;
-            font-weight: 700;
-            color: #555;
+            position: absolute;
+            bottom: 15px;
+            font-size: 16px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 2px;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        .wheel-area {
-            flex: 2;
-            background: var(--panel);
-            border: 2px solid var(--border);
-            border-radius: 15px;
+        .p-label.top {
+            bottom: auto;
+            top: 15px;
+        }
+
+        .val-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            font-family: 'Orbitron', sans-serif;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .version-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            color: #333;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .dev-credit-box {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .dev-credit-link {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.1);
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: color 0.3s;
+            pointer-events: auto;
+        }
+
+        .dev-credit-link:hover {
+            color: var(--accent);
+        }
+
+        /* CENTER BUTTONS */
+        .center-col-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .action-btn {
+            height: 40px;
+            /* Basması kolay yükseklik */
+            background: #111;
+            border: 1px solid #444;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            position: relative;
+            color: #ccc;
+            font-weight: 900;
+            font-size: 13px;
+            transition: all 0.1s;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .action-btn:active,
+        .action-btn.active {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
+        }
+
+        .action-btn.nos {
+            background: #2a0505;
+            color: var(--danger);
+            border-color: #500;
+        }
+
+        .action-btn.nos:active,
+        .action-btn.nos.active {
+            background: var(--danger);
+            color: #fff;
+            box-shadow: 0 0 15px var(--danger);
+        }
+
+        /* SMALL WHEEL */
+        .wheel-area-small {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1.2;
         }
 
         .wheel-graphic {
-            width: 150px;
-            height: 150px;
-            border: 12px solid #222;
+            width: 90px;
+            height: 90px;
+            border: 8px solid #222;
             border-radius: 50%;
             position: relative;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
             transition: transform 0.05s linear;
         }
 
@@ -387,8 +497,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
+            width: 25px;
+            height: 25px;
             background: #111;
             border-radius: 50%;
             border: 2px solid #333;
@@ -396,13 +506,13 @@
 
         .wheel-marker {
             position: absolute;
-            top: -12px;
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 10px;
-            height: 24px;
+            width: 6px;
+            height: 18px;
             background: var(--accent);
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         .sensor-btn {
@@ -410,11 +520,29 @@
             color: #000;
             font-weight: 900;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 12px;
             border-radius: 5px;
-            font-size: 16px;
-            margin-top: 15px;
+            font-size: 12px;
             cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+            width: 100%;
+        }
+
+        .dev-credit {
+            position: absolute;
+            left: 70px;
+            top: -10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.15);
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .dev-credit:hover {
+            color: var(--accent);
         }
     </style>
 </head>
@@ -422,7 +550,11 @@
 <body>
 
     <div class="dash-board">
-        <div class="sys-bar">
+        <div class="sys-bar-left">
+            <a href="f1_wheel.html" id="modeBtn">F1 MODE</a>
+            <a href="https://github.com/tasbaris" target="_blank" class="dev-credit">DEVELOPED BY TASBARIS</a>
+        </div>
+        <div class="sys-bar-right">
             <button id="fsBtn">⛶</button>
             <div class="conn-dot" id="ws-status"></div>
         </div>
@@ -459,13 +591,11 @@
                 </div>
             </div>
         </div>
-
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <div class="temp-box">
-                <span class="temp-val" id="tele-oil">0</span>
-                <span class="temp-label">OIL °C</span>
-            </div>
-
+        <div class="temp-box">
+            <span class="temp-val" id="tele-oil">0</span>
+            <span class="temp-label">OIL °C</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;margin-top:12px;">
             <div class="indicators">
                 <span class="ind abs" id="ind-abs">ABS</span>
                 <span class="ind esc" id="ind-esc">TCS</span>
@@ -477,19 +607,17 @@
                 <span class="ind check" id="ind-chk">CHK</span>
                 <span class="ind brk" id="ind-brk">BRK</span>
             </div>
-
-            <div class="temp-box">
-                <span class="temp-val" id="tele-eng">0</span>
-                <span class="temp-label">ENG °C</span>
-            </div>
         </div>
-
+        <div class="temp-box">
+            <span class="temp-val" id="tele-eng">0</span>
+            <span class="temp-label">ENG °C</span>
+        </div>
         <div class="dash-section">
-            <span class="dash-val" id="tele-rpm">0</span>
+            <span class="dash-val" id="tele-rpm" onclick="promptMaxRpm()" style="cursor: pointer;">0</span>
             <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                 <div
                     style="display: flex; justify-content: space-between; width: 70%; margin-top: 0; align-items: flex-end;">
-                    <span class="dash-label" style="margin: 0;">RPM</span>
+                    <span class="dash-label" id="lbl-rpm" style="margin: 0; cursor: pointer;">RPM</span>
                     <span class="dash-label" id="turbo-text"
                         style="margin: 0; color: var(--accent); font-size: 10px;">0.00 BAR</span>
                 </div>
@@ -504,56 +632,70 @@
     </div>
 
     <div class="main-stage">
-        <div class="btn-col">
-            <div class="action-btn" id="btnCam">🎥 CAMERA</div>
-            <div class="action-btn" id="btnLight">💡 LIGHTS</div>
-            <div class="action-btn" id="btnESC">🛡️ TCS/ESC</div>
-            <div class="action-btn" id="btn4WD">⚙️ DIFF/4WD</div>
-            <div class="action-btn nos" id="btnNOS">🔥 NITRO</div>
+
+        <!-- LEFT THUMB ZONE: Clutch -->
+        <div class="zone left-zone">
+            <div class="pedal-wrap">
+                <div class="pedal" id="clutch-box">
+                    <div class="pedal-fill clutch-fill" id="clutch-fill"></div>
+                    <div class="p-label top">CLUTCH</div>
+                </div>
+                <div class="val-label" id="val-clutch">0.00</div>
+            </div>
         </div>
 
-        <div class="center-col">
-            <div class="top-row">
-                <div class="action-btn" id="btnStart" style="flex:1;">START (T)</div>
-                <div class="shift-btn" id="btnDown">SHIFT -</div>
-                <div class="shift-btn" id="btnUp">SHIFT +</div>
-                <div class="action-btn" id="btnReset" style="flex:1;">RESET (R)</div>
-            </div>
-
-            <div class="drive-row">
-                <div class="pedal-wrap">
-                    <div class="pedal" id="clutch-box">
-                        <div class="pedal-fill clutch-fill" id="clutch-fill"></div>
-                        <div class="pedal-cap" id="clutch-cap" style="top:0"></div>
-                    </div>
-                    <div class="p-label">CLUTCH</div>
+        <!-- CENTER ZONE: Wheel & Secondary Buttons -->
+        <div class="zone" style="flex: 1;gap:0;">
+            <div class="center-box">
+                <div class="center-col-btns">
+                    <div class="action-btn" id="btnCam">🎥 CAM</div>
+                    <div class="action-btn" id="btnLight">💡 LGT</div>
+                    <div class="action-btn" id="btnESC">🛡️ ESC</div>
                 </div>
 
-                <div class="wheel-area">
+                <div class="wheel-area-small">
                     <div class="wheel-graphic" id="wheel-img">
                         <div class="wheel-center"></div>
                         <div class="wheel-marker"></div>
                     </div>
+                    <div class="val-label" id="val-steer">0.00</div>
                     <button class="sensor-btn" id="gyroBtn">ACTIVATE GYRO</button>
+                    <div class="action-btn nos" id="btnNOS" style="width: 100%;">🔥 NITRO</div>
                 </div>
 
+                <div class="center-col-btns">
+                    <div class="action-btn" id="btn4WD">⚙️ 4WD</div>
+                    <div class="action-btn" id="btnStart">🔑 IGN</div>
+                    <div class="action-btn" id="btnReset">↻ RST</div>
+                </div>
+            </div>
+            <div class="val-label" style="opacity: 0.5; letter-spacing: 2px;">VERSION CODE: v2.2.0</div>
+        </div>
+
+        <!-- RIGHT THUMB ZONE: Shift Up & Brake/Gas -->
+        <div class="zone right-zone">
+            <div class="zone shift-zone">
+                <div class="shift-btn" id="btnDown">SHIFT -</div>
+                <div class="shift-btn" id="btnUp">SHIFT +</div>
+            </div>
+            <div class="pedals-right">
                 <div class="pedal-wrap">
                     <div class="pedal" id="brake-box">
                         <div class="pedal-fill brake-fill" id="brake-fill" style="height:0%"></div>
-                        <div class="pedal-cap" id="brake-cap" style="bottom:0"></div>
+                        <div class="p-label">BRAKE</div>
                     </div>
-                    <div class="p-label">BRAKE</div>
+                    <div class="val-label" id="val-brake">0.00</div>
                 </div>
-
                 <div class="pedal-wrap">
                     <div class="pedal" id="gas-box">
                         <div class="pedal-fill gas-fill" id="gas-fill" style="height:0%"></div>
-                        <div class="pedal-cap" id="gas-cap" style="bottom:0"></div>
+                        <div class="p-label">GAS</div>
                     </div>
-                    <div class="p-label">THROTTLE</div>
+                    <div class="val-label" id="val-gas">0.00</div>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
@@ -578,9 +720,20 @@
         const indChk = document.getElementById('ind-chk');
         const indBrk = document.getElementById('ind-brk');
 
+        // Value Labels
+        const valGas = document.getElementById('val-gas');
+        const valBrake = document.getElementById('val-brake');
+        const valClutch = document.getElementById('val-clutch');
+        const valSteer = document.getElementById('val-steer');
+
         // State Tracking
         let steerOutput = 0, tiltOffset = 0, currentTilt = 0;
         let s = { gas: 0, brake: 0, clutch: 0, hb: 0, vU: 0, vD: 0, t: 0, r: 0, lgt: 0, esc: 0, fwd: 0, nos: 0, cam: 0 };
+        let maxRpm = 4000; // Başlangıç taban devri (Otomatik artacak)
+
+        function promptMaxRpm() {
+            maxRpm = 4000; // Sıfırlama değeri
+        }
 
         // Parse OutGauge Data
         ws.onmessage = (e) => {
@@ -590,31 +743,45 @@
                 tRpm.innerText = p[2];
                 let g = parseInt(p[3]);
 
-                // OutGauge Gear mapping: 0=R, 1=N, 2=1, 3=2...
                 if (g === 0) tGear.innerText = 'R';
                 else if (g === 1) tGear.innerText = 'N';
                 else tGear.innerText = (g - 1).toString();
 
-                // LED Logic (Max ~7500 RPM for generic display)
                 let rpm = parseInt(p[2]);
-                let activeLeds = Math.min(12, Math.floor((rpm / 7500) * 12));
+
+                // Otomatik Kalibrasyon: Görülen en yüksek RPM'i kaydet
+                if (rpm > maxRpm) {
+                    maxRpm = rpm;
+                }
+
+                // 12.1 çarpanı ile son LED sadece devir limitine tam yaklaşıldığında yanar
+                let activeLeds = Math.min(12, Math.floor((rpm / maxRpm) * 12.1));
+
+                const isRedline = (rpm / maxRpm) > 0.98;
+
                 leds.forEach((led, i) => {
                     led.className = 'led';
                     if (i < activeLeds) {
                         if (i < 6) led.classList.add('g');
                         else if (i < 10) led.classList.add('y');
-                        else led.classList.add('r');
+                        else {
+                            // Last 2 LEDs flash at redline
+                            if (isRedline) {
+                                // Toggle class based on time for flashing effect
+                                if (Math.floor(Date.now() / 50) % 2 === 0) led.classList.add('r');
+                            } else {
+                                led.classList.add('r');
+                            }
+                        }
                     }
                 });
 
-                // Dashboard Lights Bitfield (LFS OutGauge Standard)
                 let flags = parseInt(p[4]);
-                indAbs.classList.toggle('active', (flags & 1024) !== 0); // ABS
-                indEsc.classList.toggle('active', (flags & 16) !== 0); // ESC/TCS
-                indChk.classList.toggle('active', (flags & 256) !== 0); // Check Engine / Oil Warn
-                indBrk.classList.toggle('active', (flags & 4) !== 0); // Handbrake
+                indAbs.classList.toggle('active', (flags & 1024) !== 0);
+                indEsc.classList.toggle('active', (flags & 16) !== 0);
+                indChk.classList.toggle('active', (flags & 256) !== 0);
+                indBrk.classList.toggle('active', (flags & 4) !== 0);
 
-                // Turbo Bar (Max ~2.5 Bar)
                 let turboBar = document.getElementById('turbo-bar');
                 let turboText = document.getElementById('turbo-text');
                 if (turboBar && p.length > 5) {
@@ -624,7 +791,6 @@
                     if (turboText) turboText.innerText = turboVal.toFixed(2) + ' BAR';
                 }
 
-                // New Telemetry (Fuel, Eng Temp, Oil Temp)
                 if (p.length > 8) {
                     let fuelVal = parseInt(p[6]);
                     let engVal = parseInt(p[7]);
@@ -639,7 +805,6 @@
                     tEng.style.color = engVal > 105 ? 'var(--danger)' : '#fff';
                     tOil.style.color = oilVal > 115 ? 'var(--danger)' : '#fff';
 
-                    // Fuel warning color
                     let fuelColor = fuelVal < 15 ? 'var(--danger)' : 'var(--safe)';
                     tFuelText.style.color = fuelColor;
                     tFuelBar.style.background = fuelColor;
@@ -658,7 +823,6 @@
         function setupPedal(id, key, isInv) {
             const box = document.getElementById(id + '-box');
             const fill = document.getElementById(id + '-fill');
-            const cap = document.getElementById(id + '-cap');
             let tid = null;
 
             const move = (t) => {
@@ -668,37 +832,43 @@
                 s[key] = pct;
 
                 fill.style.height = (pct * 100) + '%';
-                cap.style.transform = 'none';
 
                 if (isInv) {
                     fill.style.top = '0'; fill.style.bottom = 'auto';
-                    cap.style.top = (pct * (r.height - 20)) + 'px'; cap.style.bottom = 'auto';
                 } else {
                     fill.style.bottom = '0'; fill.style.top = 'auto';
-                    cap.style.bottom = (pct * (r.height - 20)) + 'px'; cap.style.top = 'auto';
                 }
             };
 
             const reset = () => {
                 s[key] = 0; fill.style.height = '0%';
-                cap.style.transform = 'none';
-                if (isInv) { cap.style.top = '0px'; } else { cap.style.bottom = '0px'; }
                 tid = null;
             };
 
-            box.addEventListener('touchstart', e => { e.preventDefault(); tid = e.changedTouches[0].identifier; move(e.changedTouches[0]); }, { passive: false });
+            box.addEventListener('touchstart', e => {
+                e.preventDefault();
+                tid = e.changedTouches[0].identifier;
+                move(e.changedTouches[0]);
+
+            }, { passive: false });
             box.addEventListener('touchmove', e => { e.preventDefault(); for (let t of e.changedTouches) if (t.identifier === tid) move(t); }, { passive: false });
             box.addEventListener('touchend', reset); box.addEventListener('touchcancel', reset);
         }
 
         setupPedal('gas', 'gas', false);
         setupPedal('brake', 'brake', false);
-        setupPedal('clutch', 'clutch', true); // Clutch fills downwards
+        setupPedal('clutch', 'clutch', true);
 
-        // Button Setup (Touch optimized)
+        // Button Setup
         function setupBtn(id, key) {
             const el = document.getElementById(id);
-            el.addEventListener('touchstart', e => { e.preventDefault(); s[key] = 1; el.classList.add('active'); }, { passive: false });
+            if (!el) return;
+            el.addEventListener('touchstart', e => {
+                e.preventDefault();
+                s[key] = 1;
+                el.classList.add('active');
+
+            }, { passive: false });
             const up = (e) => { if (e) e.preventDefault(); s[key] = 0; el.classList.remove('active'); };
             el.addEventListener('touchend', up); el.addEventListener('touchcancel', up);
         }
@@ -710,40 +880,84 @@
         setupBtn('btnCam', 'cam');
 
         // Gyroscope
-        document.getElementById('gyroBtn').onclick = () => {
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(st => { if (st === 'granted') startGyro(); });
-            } else startGyro();
-        };
+        let isGyroActive = false;
+        const gyroBtn = document.getElementById('gyroBtn');
 
-        function startGyro() {
-            document.getElementById('gyroBtn').style.display = 'none';
-            window.addEventListener('deviceorientation', e => {
-                let angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
-                let isLandscape = window.innerWidth > window.innerHeight;
+        function gyroHandler(e) {
+            let angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+            let isLandscape = window.innerWidth > window.innerHeight;
 
-                let raw = 0;
-                if (isLandscape) {
-                    // Horizontal mode check (-90 or 270 angle)
-                    raw = (angle === -90 || angle === 270) ? e.beta : -e.beta;
+            let raw = 0;
+            if (isLandscape) {
+                raw = (angle === -90 || angle === 270) ? e.beta : -e.beta;
+            } else {
+                raw = e.gamma;
+            }
+
+            currentTilt = raw;
+            steerOutput = Math.max(-1, Math.min(1, (raw - tiltOffset) / 75 * -1));
+            document.getElementById('wheel-img').style.transform = `rotate(${steerOutput * 180}deg)`;
+        }
+
+        function activateGyro() {
+            window.addEventListener('deviceorientation', gyroHandler);
+            isGyroActive = true;
+            localStorage.setItem('gyroEnabled', 'true');
+            gyroBtn.innerText = 'CLOSE GYRO';
+            gyroBtn.style.borderColor = 'var(--danger)';
+            gyroBtn.style.color = 'var(--danger)';
+        }
+
+        function deactivateGyro() {
+            window.removeEventListener('deviceorientation', gyroHandler);
+            isGyroActive = false;
+            localStorage.setItem('gyroEnabled', 'false');
+            steerOutput = 0;
+            document.getElementById('wheel-img').style.transform = `rotate(0deg)`;
+            gyroBtn.innerText = 'ACTIVATE GYRO';
+            gyroBtn.style.borderColor = '#555';
+            gyroBtn.style.color = '#000';
+        }
+
+        function toggleGyro() {
+            if (!isGyroActive) {
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission().then(st => {
+                        if (st === 'granted') activateGyro();
+                    });
                 } else {
-                    raw = e.gamma;
+                    activateGyro();
                 }
+            } else {
+                deactivateGyro();
+            }
+        }
 
-                currentTilt = raw;
-                steerOutput = Math.max(-1, Math.min(1, (raw - tiltOffset) / 75 * -1));
-                document.getElementById('wheel-img').style.transform = `rotate(${steerOutput * 180}deg)`;
-            });
+        gyroBtn.onclick = toggleGyro;
+
+        if (localStorage.getItem('gyroEnabled') === 'true') {
+            activateGyro();
         }
 
         // Data Loop
-        setInterval(() => {
+        let sendInterval = setInterval(() => {
             if (ws.readyState === 1) {
                 let g = 0; if (s.vU) g = 1; else if (s.vD) g = -1;
-                // gas|brake|clutch|steer|gear|T|R|HB|Light|ESC|4WD|NOS|Cam
                 ws.send(`${s.gas.toFixed(2)}|${s.brake.toFixed(2)}|${s.clutch.toFixed(2)}|${steerOutput.toFixed(3)}|${g}|${s.t}|${s.r}|${s.hb}|${s.lgt}|${s.esc}|${s.fwd}|${s.nos}|${s.cam}`);
             }
+
+            // Update value labels
+            valGas.innerText = s.gas.toFixed(2);
+            valBrake.innerText = s.brake.toFixed(2);
+            valClutch.innerText = s.clutch.toFixed(2);
+            valSteer.innerText = steerOutput.toFixed(2);
+            if (valTilt) valTilt.innerText = Math.round(currentTilt) + '°';
         }, 15);
+
+        window.onbeforeunload = () => {
+            clearInterval(sendInterval);
+            ws.close();
+        };
     </script>
 </body>
 

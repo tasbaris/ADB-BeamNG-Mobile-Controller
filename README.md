@@ -1,6 +1,6 @@
 # ADB BeamNG Mobile Controller 🏎️📱
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/) [![BeamNG](https://img.shields.io/badge/BeamNG.drive-v0.31%2B-orange.svg)](https://www.beamng.com/)
+[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/) [![BeamNG](https://img.shields.io/badge/BeamNG.drive-v0.31%2B-orange.svg)](https://www.beamng.com/)
 [![Python](https://img.shields.io/badge/python-3.10%2B-brightgreen.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Status](https://img.shields.io/badge/status-stable-success.svg)]()
 
 A professional, ultra-low latency mobile steering wheel and pedal controller for BeamNG.drive. Turn your smartphone into a high-precision virtual racing wheel with a live telemetry dashboard, support for street driving (clutch) and rally racing (handbrake).
@@ -8,6 +8,10 @@ A professional, ultra-low latency mobile steering wheel and pedal controller for
 ### Screenshot
 Normal Dash
 ![BeamNG Mobile Controller](dash.jpeg)
+
+F1/GT3 Dash
+![BeamNG Mobile Controller](f1.jpeg)
+
 
 Race Dash(just for telemetry)
 ![BeamNG Mobile Controller](race_dash.png)
@@ -20,9 +24,11 @@ Bu proje, akıllı telefonunuzun jiroskop ve dokunmatik ekranını kullanarak Be
 
 ### 🚀 Özellikler
 
-- **Çift Yönlü Telemetri:** Telefonunuzda RPM, Hız (KM/H), Vites ve Turbo Basıncı gibi verileri anlık gösteren dijital panel.
+- **✨ Çift Arayüz Modu (Dual UI):** F1 tarzı profesyonel direksiyon (`f1_wheel.html`) ile Klasik ergonomik mod (`index.html`) arasında tek tuşla geçiş.
+- **🧠 Otomatik RPM Kalibrasyonu:** Arayüz, aracın limitlerini otomatik öğrenir ve LED göstergeleri buna göre ayarlar.
+- **Çift Yönlü Telemetri:** Telefonunuzda RPM, Hız (KM/H), Vites ve Turbo Basıncı gibi verileri anlık gösteren dijital panel (Dinamik Shift Light destekli).
 - **Ultra Düşük Gecikme:** 10ms döngü süresi ile anında tepki.
-- **Çoklu Dokunmatik:** Gaz, fren ve viteslere aynı anda basabilme.
+- **Çoklu Dokunmatik:** Gaz, fren ve viteslere aynı anda basabilme. Ergonomik yerleşim ve yeni Gri Debriyaj desteği.
 - **Bağımsız GT3 Yarış Ekranı:** İkinci monitörler veya tabletler için ultra detaylı `race_dash.html` MoTeC stili panel.
 - **💻 Uyumluluk:** Bu proje macOS üzerinde **CrossOver** kullanılarak test edilmiş ve başarıyla çalıştırılmıştır.
 
@@ -73,9 +79,11 @@ This project allows you to control BeamNG.drive using your smartphone's gyroscop
 
 ### 🚀 Features
 
-- **Bi-Directional Telemetry:** A live digital dash on your phone showing RPM, Speed (KM/H), Gear, and Turbo Boost.
+- **✨ Dual Interface Mode:** Instantly switch between the new F1-style professional wheel (`f1_wheel.html`) and the Classic ergonomic mode (`index.html`) with a single tap.
+- **🧠 Auto RPM Calibration:** Automatically learns the vehicle's max RPM and adjusts LED scaling accordingly.
+- **Bi-Directional Telemetry:** A live digital dash on your phone showing RPM, Speed (KM/H), Gear, and Turbo Boost (with Dynamic Shift Light).
 - **Ultra-Low Latency:** 10ms processing loop for instant feedback.
-- **Multi-Touch:** Support for simultaneous pedal and gear inputs.
+- **Multi-Touch:** Support for simultaneous pedal and gear inputs. Featuring new ergonomic triggers and a top-to-bottom Grey Clutch.
 - **Standalone GT3 Dashboard:** Included `race_dash.html` for a detailed MoTeC-style professional screen for tablets or 2nd monitors.
 - **💻 Compatibility:** This project has been tested and verified on **macOS** using **CrossOver**.
 
@@ -122,8 +130,9 @@ adb reverse tcp:8765 tcp:8765
 
 ## 📂 Project Structure
 
-- `index.html`: The mobile web interface with sensor, touch logic, and telemetry dashboard.
-- `server.py`: Python bridge server (WebSocket to UDP) for controller.
+- `index.html`: The redesigned ergonomic classic mobile web interface.
+- `f1_wheel.html`: The new professional F1/GT3 style steering wheel interface.
+- `server.py`: Stable Python bridge server (WebSocket to UDP) for the controller.
 - `mobileController.lua`: BeamNG.drive Game Engine extension.
 - `race_dash.html` & `race_server.py`: Standalone professional GT3 racing dashboard.
 - `outgauge_tester.py`: CLI tool for testing raw telemetry data.
